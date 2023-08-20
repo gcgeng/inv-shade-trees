@@ -2,7 +2,7 @@
 
 ### [Project Page](https://chen-geng.com/inv-shade-trees) | [Video](https://www.youtube.com/watch?v=L7zD9zM_zcg) | [Paper](https://chen-geng.com/files/inv-shade-trees.pdf) 
 
-![ist](https://chen-geng.com/media/inv-shade-trees.mp4)
+![ist](inv-shade-trees.mp4)
 
 > [Tree-Structured Shading Decomposition](https://chen-geng.com/inv-shade-trees)
 >
