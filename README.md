@@ -12,7 +12,7 @@
 >
 > ICCV 2023
 
-Implementation for the paper "Tree-Structured Shading Decomposition", which proposes a method to decompose a tree-structured representation for object shadings.
+Official repository for the paper "Tree-Structured Shading Decomposition", which proposes a method to decompose a tree-structured representation for object shadings.
 
 Citation: 
 ```
