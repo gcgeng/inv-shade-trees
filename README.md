@@ -17,9 +17,9 @@ Implementation for the paper "Tree-Structured Shading Decomposition", which prop
 Citation: 
 ```
 @inproceedings{inv-shade-trees,
-              title={Tree-Structured Shading Decomposition},
-              author={Chen Geng and Hong-Xing Yu and Sharon Zhang and Maneesh Agrawala and Jiajun Wu},
-              booktitle={ICCV},
-              year={2023}
-              }
+  title={Tree-Structured Shading Decomposition},
+  author={Chen Geng and Hong-Xing Yu and Sharon Zhang and Maneesh Agrawala and Jiajun Wu},
+  booktitle={ICCV},
+  year={2023}
+}
 ```
