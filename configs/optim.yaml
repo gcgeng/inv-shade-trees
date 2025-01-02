@@ -1,0 +1,88 @@
+task: ist
+gpus: [0]
+exp_name: 'ist'
+
+condition_count: 1
+component_pad_size: 3
+
+result: 'tree_res3'
+lr: 0.05
+truncate: 2.0
+max_minibatch: 9
+make_video: False
+
+mapping_input: 'mask' # can be 'latent'
+mapping_input_latent_dim: 64
+mapping_output: 'image' # can be 'latent'
+
+#     screen(-1)
+#     |         \
+#   multiply(-3) highlgiht(3)
+#     |     \
+# albedo(6)  diff(7)   
+
+# structure_code: [-1, -1, -3, 3, 6, 7]
+structure_code: [-1, -1, 3, 3]
+
+z_len: [-1, -1, 512, 5, 512, -1, 3, 4]
+
+grammar:
+    - S->screen(env,N)
+    - N->screen(M,rim)
+    - M->screen(L,H)
+    - L->multiply(B,D)
+    - D->diff
+    - D->multiply(tdiff,tdiff)
+    - B->albedo
+    - B->mix(albedo,albedo,tmask)
+    - B->mix(albedo,albedo,stmask)
+    - B->mix(B1,albedo,stmask)
+    - B1->mix(albedo,albedo,stmask)
+    - H->highlight
+    - H->screen(highlight,highlight)
+    - H->screen(H1,highlight)
+    - H1->screen(highlight,highlight)
+nts:
+    - S
+    - N
+    - M
+    - L
+    - D
+    - B
+    - B1
+    - H
+    - H1
+symbols:
+    - S
+    - env
+    - rim
+    - diff
+    - tdiff
+    - albedo
+    - tmask
+    - stmask
+    - highlight
+ops:
+    - screen
+    - multiply
+    - mix
+stypes:
+    - 'screen'
+    - 'multiply'
+    - 'mix'
+    - 'env'
+    - 'rim'
+    - 'diff'
+    - 'tdiff'
+    - 'albedo'
+    - 'tmask'
+    - 'stmask'
+    - 'highlight'
+
+
+ep_iter: 100
+save_ep: 5
+eval_ep: 5
+vis_ep: 4000
+save_latest_ep: 1
+log_interval: 1

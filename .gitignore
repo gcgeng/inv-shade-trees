@@ -1,0 +1,5 @@
+ckpts
+exps
+*.pyc
+*.zip
+results

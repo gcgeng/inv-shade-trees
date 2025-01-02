@@ -1,0 +1,133 @@
+task: ist
+gpus: [0]
+exp_name: 'ist'
+
+ratio: 0.5
+render_ratio: 1.0
+only_train_select: False
+concat_normal: False
+component_pad_size: 3
+use_perc: False
+no_condition: False
+use_upsample: False
+upsample_method: "nearest"
+more_resnet: False
+no_mask: False
+pred_type: 'ops'
+
+random_swap: False
+
+mapping_input: 'image' # can be 'latent'
+mapping_input_latent_dim: 64
+mapping_output: 'image' # can be 'latent'
+
+hier: parent_bottom
+
+pixelsnail:
+    channel: 256
+    n_res_block: 4
+    n_res_channel: 256
+    dropout: 0.1
+    n_out_res_block: 0
+    n_cond_res_block: 3
+
+vqvae:
+    K: 2048
+    top_shape: [8, 8]
+    bottom_shape: [32, 32]
+
+n_embed: 2048
+bottom_stride: 8
+top_stride: 4
+
+grammar:
+    - S->screen(env,N)
+    - N->screen(M,rim)
+    - M->screen(L,H)
+    - L->multiply(B,D)
+    - D->diff
+    - D->multiply(tdiff,tdiff)
+    - B->albedo
+    - B->mix(albedo,albedo,tmask)
+    - B->mix(albedo,albedo,stmask)
+    - B->mix(B1,albedo,stmask)
+    - B1->mix(albedo,albedo,stmask)
+    - H->highlight
+    - H->screen(highlight,highlight)
+    - H->screen(H1,highlight)
+    - H1->screen(highlight,highlight)
+nts:
+    - S
+    - N
+    - M
+    - L
+    - D
+    - B
+    - B1
+    - H
+    - H1
+symbols:
+    - S
+    - env
+    - rim
+    - diff
+    - tdiff
+    - albedo
+    - tmask
+    - stmask
+    - highlight
+ops:
+    - screen
+    - multiply
+    - mix
+
+dataset_name_rep: ball5_real
+inv_child: True
+
+condition_count: 1
+
+network_module: lib.networks.ist.pixelsnail_parent
+
+visualizer_module: lib.visualizers.base_vis
+
+sample:
+    count: 4
+    top_network:
+        network_module: 'lib.networks.ist.pixelsnail_parent'
+        network_kwargs:
+            hier: parent_top
+        path: 'ckpts/top_network.pth'
+    bottom_network:
+        network_module: 'lib.networks.ist.pixelsnail_parent'
+        network_kwargs:
+            hier: parent_bottom
+        path: 'ckpts/bottom_network.pth'
+    vqvae_network:
+        network_module: 'lib.networks.ist.vqvae2_bn'
+        path: 'ckpts/vqvae_network.pth'
+    sibling_top_network:
+        network_module: 'lib.networks.ist.pixelsnail_parent'
+        network_kwargs:
+            hier: parent_top_sibling
+        path: 'ckpts/sibling_top_network.pth'
+    sibling_bottom_network:
+        network_module: 'lib.networks.ist.pixelsnail_parent'
+        network_kwargs:
+            hier: parent_bottom_sibling
+        path: 'ckpts/sibling_bottom_network.pth'
+    classify_network:
+        network_module: 'lib.networks.ist.topdown_classify_network'
+        path: 'ckpts/classify_network.pth'
+    ops_network:
+        network_module: 'lib.networks.ist.topdown_op_network'
+        path: 'ckpts/ops_network.pth'
+    opparam_network:
+        network_module: 'lib.networks.ist.topdown_opparam_network'
+        path: 'ckpts/opparam_network.pth'
+
+ep_iter: 100
+save_ep: 5
+eval_ep: 5
+vis_ep: 4000
+save_latest_ep: 1
+log_interval: 1
